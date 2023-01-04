@@ -1,0 +1,46 @@
+spring:
+  redis:
+    host: redis_boot
+    port: 6379
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
+      username: sa
+    initialization-mode: always
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  devtools:
+    restart:
+      enabled: true
+    remote:
+      restart:
+        enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    defer-datasource-initialization: true
+
+
+jwt:
+  header: Authorization
+  secret: 4oCYd29uc2Vvay10ZWNoLXNwcmluZy1ib290LWp3dC1zZXJ2aWNlLXNlY3JldC13b25zZW9rLXRlY2gtc3ByaW5nLWJvb3Qtand0LXNlcnZpY2Utc2VjcmV04oCZCg==
+  access-token-validity-in-seconds: 1800
+  refresh-token-validity-in-seconds: 604800
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    defaultModelsExpandDepth: -1
+
+logging:
+  level:
+    root : DEBUG
