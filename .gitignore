@@ -144,3 +144,7 @@ replay_pid*
 # 프로젝트 제외 경로
 /.gradle/
 /build/
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/jarRepositories.xml
+/.idea/compiler.xml
