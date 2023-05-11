@@ -4,12 +4,12 @@ import com.facilities.pet.domain.BaseTimeEntity;
 import com.facilities.pet.domain.pet.PetCompany;
 import com.facilities.pet.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 
 @Getter
 @Builder

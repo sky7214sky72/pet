@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,11 +19,11 @@ public class Swagger2Config {
                 .builder()
                 .group("Security Open Api")
                 .pathsToMatch("/api/**")
-                .addOpenApiCustomiser(buildSecurityOpenApi())
+                .addOpenApiCustomizer(buildSecurityOpenApi())
                 .build();
     }
 
-    public OpenApiCustomiser buildSecurityOpenApi() {
+    public OpenApiCustomizer buildSecurityOpenApi() {
         SecurityScheme securityScheme = new SecurityScheme()
                 .name("Authorization")
                 .type(SecurityScheme.Type.HTTP)

@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  app:
+    container_name: pet-app
+    image: openjdk:17-jdk-slim
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./pet:/pet
+    working_dir: /
+    depends_on:
+      - db
+      - redis
+    restart: always
+    command: ./gradlew bootRun
+  db:
+    container_name: pet-db
+    platform: linux/x86_64
+    image: mysql
+    environment:
+      MYSQL_DATABASE: pet_db
+      MYSQL_USER: pet
+      MYSQL_PASSWORD: pet
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db/data:/var/lib/mysql:rw
+    ports:
+      - "3306:3306"
+    restart: always
+  redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: redis_boot
+    hostname: redis_boot
+    ports:
+      - "6379:6379"
