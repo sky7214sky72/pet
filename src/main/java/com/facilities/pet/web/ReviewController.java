@@ -6,44 +6,56 @@ import com.facilities.pet.service.user.UserService;
 import com.facilities.pet.web.dto.ReviewResponseDto;
 import com.facilities.pet.web.dto.ReviewSaveRequestDto;
 import com.facilities.pet.web.dto.ReviewUpdateRequestDto;
-import com.facilities.pet.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * . ReviewController
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ReviewController {
-    private final ReviewService reviewService;
-    private final UserService userService;
 
-    @GetMapping("/reviews/{companyId}")
-    public Page<ReviewResponseDto> list(Pageable pageable, @PathVariable Long companyId){
-        return reviewService.findByCompanyId(pageable, companyId);
-    }
+  private final ReviewService reviewService;
+  private final UserService userService;
 
-    @PostMapping("/reviews/{companyId}")
-    public Long create(@PathVariable Long companyId, @RequestBody ReviewSaveRequestDto reviewSaveRequestDto) {
-        User user = userService.getMyUserWithAuthorities().orElse(null);
-        return reviewService.save(reviewSaveRequestDto, user, companyId);
-    }
+  @GetMapping("/reviews/{companyId}")
+  public Page<ReviewResponseDto> list(Pageable pageable, @PathVariable Long companyId) {
+    return reviewService.findByCompanyId(pageable, companyId);
+  }
 
-    @GetMapping("/reviews/detail/{reviewId}")
-    public ReviewResponseDto detail(@PathVariable Long reviewId) {
-        return reviewService.findByReviewId(reviewId);
-    }
+  @PostMapping("/reviews/{companyId}")
+  public Long create(@PathVariable Long companyId,
+      @RequestBody ReviewSaveRequestDto reviewSaveRequestDto) {
+    User user = userService.getMyUserWithAuthorities().orElse(null);
+    return reviewService.save(reviewSaveRequestDto, user, companyId);
+  }
 
-    @PutMapping("/reviews/{reviewId}")
-    public Long modify(@PathVariable Long reviewId, @RequestBody ReviewUpdateRequestDto reviewUpdateRequestDto) {
-        User user = userService.getMyUserWithAuthorities().orElse(null);
-        return reviewService.update(reviewId, reviewUpdateRequestDto, user);
-    }
+  @GetMapping("/reviews/detail/{reviewId}")
+  public ReviewResponseDto detail(@PathVariable Long reviewId) {
+    return reviewService.findByReviewId(reviewId);
+  }
 
-    @DeleteMapping("/reviews/{reviewId}")
-    public Long delete(@PathVariable Long reviewId) {
-        reviewService.delete(reviewId);
-        return reviewId;
-    }
+  @PutMapping("/reviews/{reviewId}")
+  public Long modify(@PathVariable Long reviewId,
+      @RequestBody ReviewUpdateRequestDto reviewUpdateRequestDto) {
+    User user = userService.getMyUserWithAuthorities().orElse(null);
+    return reviewService.update(reviewId, reviewUpdateRequestDto, user);
+  }
+
+  @DeleteMapping("/reviews/{reviewId}")
+  public Long delete(@PathVariable Long reviewId) {
+    reviewService.delete(reviewId);
+    return reviewId;
+  }
 }

@@ -9,30 +9,43 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * . Swagger2Config
+ */
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "Pet Facilities API", version = "v0.0.1", description = "애완동물 시설 현황 API 명세서입니다."))
+@OpenAPIDefinition(
+    info = @Info(
+        title = "Pet Facilities API", version = "v0.0.1", description = "애완동물 시설 현황 API 명세서입니다."
+    )
+)
 public class Swagger2Config {
 
-    @Bean
-    public GroupedOpenApi SecurityGroupOpenApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("Security Open Api")
-                .pathsToMatch("/api/**")
-                .addOpenApiCustomizer(buildSecurityOpenApi())
-                .build();
-    }
+  /**
+   * . SecurityGroupOpenApi
+   */
+  @Bean
+  public GroupedOpenApi securityGroupOpenApi() {
+    return GroupedOpenApi
+        .builder()
+        .group("Security Open Api")
+        .pathsToMatch("/api/**")
+        .addOpenApiCustomizer(buildSecurityOpenApi())
+        .build();
+  }
 
-    public OpenApiCustomizer buildSecurityOpenApi() {
-        SecurityScheme securityScheme = new SecurityScheme()
-                .name("Authorization")
-                .type(SecurityScheme.Type.HTTP)
-                .in(SecurityScheme.In.HEADER)
-                .bearerFormat("JWT")
-                .scheme("bearer");
+  /**
+   * . buildSecurityOpenApi
+   */
+  public OpenApiCustomizer buildSecurityOpenApi() {
+    SecurityScheme securityScheme = new SecurityScheme()
+        .name("Authorization")
+        .type(SecurityScheme.Type.HTTP)
+        .in(SecurityScheme.In.HEADER)
+        .bearerFormat("JWT")
+        .scheme("bearer");
 
-        return OpenApi -> OpenApi
-                .addSecurityItem(new SecurityRequirement().addList("jwt token"))
-                .getComponents().addSecuritySchemes("jwt token", securityScheme);
-    }
+    return openAPI -> openAPI
+        .addSecurityItem(new SecurityRequirement().addList("jwt token"))
+        .getComponents().addSecuritySchemes("jwt token", securityScheme);
+  }
 }

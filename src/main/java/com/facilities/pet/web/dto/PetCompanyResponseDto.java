@@ -3,18 +3,24 @@ package com.facilities.pet.web.dto;
 import com.facilities.pet.domain.pet.PetCompany;
 import lombok.Getter;
 
+/**
+ * . PetCompanyResponseDto
+ */
 @Getter
 public class PetCompanyResponseDto {
 
-    private Long id;
-    private String name;
-    private String address;
-    private String status;
+  private final Long id;
+  private final String name;
+  private final String address;
+  private final String status;
 
-    public PetCompanyResponseDto(PetCompany petCompany) {
-        this.id = petCompany.getId();
-        this.name = petCompany.getName();
-        this.address = petCompany.getAddress();
-        this.status = petCompany.getStatus().getValue();
-    }
+  /**
+   * . PetCompanyResponseDto
+   */
+  public PetCompanyResponseDto(PetCompany petCompany) {
+    this.id = petCompany.getId();
+    this.name = petCompany.getName();
+    this.address = petCompany.getAddress();
+    this.status = petCompany.getStatus().getValue();
+  }
 }

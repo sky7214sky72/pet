@@ -1,12 +1,14 @@
 package com.facilities.pet.domain.user;
 
-import com.facilities.pet.web.dto.UserDto;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
+/**
+ * . UserRepository
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
-    @EntityGraph(attributePaths = "authorities")
-    Optional<User> findOneWithAuthoritiesByPhoneNumber(String phoneNumber);
+
+  @EntityGraph(attributePaths = "authorities")
+  Optional<User> findOneWithAuthoritiesByPhoneNumber(String phoneNumber);
 }

@@ -10,19 +10,23 @@ services:
       - db
       - redis
     ports:
-      - "8080:8080"
+      - "18089:8080"
     container_name: pet-app
     environment:
       SPRING_PROFILES_ACTIVE: local
   db:
     container_name: pet-db
-    platform: linux/x86_64
-    image: mysql
+    platform: linux/arm64
+    image: mysql:8.0
     environment:
       MYSQL_DATABASE: pet_db
       MYSQL_USER: pet
       MYSQL_PASSWORD: pet
       MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     volumes:
       - ../db/data:/var/lib/mysql:rw
     ports:

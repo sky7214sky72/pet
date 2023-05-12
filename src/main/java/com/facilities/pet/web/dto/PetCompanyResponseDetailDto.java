@@ -3,22 +3,29 @@ package com.facilities.pet.web.dto;
 import com.facilities.pet.domain.pet.PetCompany;
 import lombok.Getter;
 
+/**
+ * . PetCompanyResponseDetailDto
+ */
 @Getter
 public class PetCompanyResponseDetailDto {
-    private Long id;
-    private String name;
-    private String address;
-    private String status;
 
-    private double coordinatesX;
-    private double coordinatesY;
+  private final Long id;
+  private final String name;
+  private final String address;
+  private final String status;
 
-    public PetCompanyResponseDetailDto(PetCompany petCompany) {
-        this.id = petCompany.getId();
-        this.name = petCompany.getName();
-        this.address = petCompany.getAddress();
-        this.status = petCompany.getStatus().getValue();
-        this.coordinatesX = petCompany.getCoordinatesX();
-        this.coordinatesY = petCompany.getCoordinatesY();
-    }
+  private final double coordinatesX;
+  private final double coordinatesY;
+
+  /**
+   * . PetCompanyResponseDetailDto
+   */
+  public PetCompanyResponseDetailDto(PetCompany petCompany) {
+    this.id = petCompany.getId();
+    this.name = petCompany.getName();
+    this.address = petCompany.getAddress();
+    this.status = petCompany.getStatus().getValue();
+    this.coordinatesX = petCompany.getCoordinatesX();
+    this.coordinatesY = petCompany.getCoordinatesY();
+  }
 }

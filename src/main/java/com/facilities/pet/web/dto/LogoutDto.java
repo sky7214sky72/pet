@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
+/**
+ * . LogoutDto
+ */
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogoutDto {
-    private String accessToken;
-    private String refreshToken;
+
+  private String accessToken;
+  private String refreshToken;
 }
