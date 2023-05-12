@@ -1,14 +1,12 @@
 spring:
-  profiles:
-    active: local
-  redis:
-    host: redis_boot
-    port: 6379
+  data:
+    redis:
+      host: redis_boot
+      port: 6379
   datasource:
     hikari:
       jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
       username: sa
-    initialization-mode: always
   h2:
     console:
       enabled: true
@@ -29,6 +27,9 @@ spring:
         format_sql: true
         show_sql: true
     defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 
 
 jwt:
@@ -45,4 +46,4 @@ springdoc:
 
 logging:
   level:
-    root : INFO
+    root: INFO

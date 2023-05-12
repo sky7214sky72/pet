@@ -1,19 +1,6 @@
 version: "3"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: DockerFile
-    restart: always
-    depends_on:
-      - db
-      - redis
-    ports:
-      - "18089:8080"
-    container_name: pet-app
-    environment:
-      SPRING_PROFILES_ACTIVE: local
   db:
     container_name: pet-db
     platform: linux/arm64
@@ -39,3 +26,15 @@ services:
     hostname: redis_boot
     ports:
       - "6379:6379"
+  app:
+    build:
+      context: .
+      dockerfile: DockerFile
+    ports:
+      - "18089:8080"
+    container_name: pet-app
+    restart: always
+    command: ./gradlew bootRun
+    depends_on:
+      - db
+      - redis

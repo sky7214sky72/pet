@@ -1,6 +1,7 @@
 package com.facilities.pet.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 @Configuration
 @EnableRedisRepositories
+@Slf4j
 public class RedisRepositoryConfig {
 
   private final RedisProperties redisProperties;
@@ -25,6 +27,7 @@ public class RedisRepositoryConfig {
    */
   @Bean
   public RedisConnectionFactory redisConnectionFactory() {
+    log.info(redisProperties.getHost());
     return new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
   }
 

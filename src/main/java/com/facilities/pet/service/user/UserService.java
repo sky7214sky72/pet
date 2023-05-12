@@ -68,6 +68,8 @@ public class UserService {
    */
   @Transactional
   public ResponseEntity<TokenDto> login(LoginDto loginDto) {
+    logger.info("hihi");
+    System.out.println("hi");
     // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
     // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
     UsernamePasswordAuthenticationToken authenticationToken =
