@@ -2,18 +2,18 @@ version: "3"
 
 services:
   app:
-    container_name: pet-app
-    image: openjdk:17-jdk-slim
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./pet:/pet
-    working_dir: /
+    build:
+      context: .
+      dockerfile: DockerFile
+    restart: always
     depends_on:
       - db
       - redis
-    restart: always
-    command: ./gradlew bootRun
+    ports:
+      - "8080:8080"
+    container_name: pet-app
+    environment:
+      SPRING_PROFILES_ACTIVE: local
   db:
     container_name: pet-db
     platform: linux/x86_64
@@ -24,7 +24,7 @@ services:
       MYSQL_PASSWORD: pet
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ./db/data:/var/lib/mysql:rw
+      - ../db/data:/var/lib/mysql:rw
     ports:
       - "3306:3306"
     restart: always

@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   redis:
     host: redis_boot
     port: 6379
