@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   db:
@@ -27,14 +27,15 @@ services:
     ports:
       - "6379:6379"
   app:
-    build:
-      context: .
-      dockerfile: DockerFile
+    image: openjdk:17-jdk-slim
     ports:
       - "18089:8080"
+    working_dir: /pet
+    volumes:
+      - .:/pet
     container_name: pet-app
     restart: always
-    command: ./gradlew bootRun
+    command: ./gradlew --continuous bootRun
     depends_on:
       - db
       - redis
