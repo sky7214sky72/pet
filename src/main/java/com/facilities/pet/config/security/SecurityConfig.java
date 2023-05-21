@@ -1,5 +1,6 @@
 package com.facilities.pet.config.security;
 
+import com.facilities.pet.domain.user.UserRepository;
 import com.facilities.pet.jwt.JwtAccessDeniedHandler;
 import com.facilities.pet.jwt.JwtAuthenticationEntryPoint;
 import com.facilities.pet.jwt.JwtSecurityConfig;
@@ -24,6 +25,7 @@ public class SecurityConfig {
   private final TokenProvider tokenProvider;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+  private final UserRepository userRepository;
 
   /**
    * . SecurityConfig
@@ -31,11 +33,13 @@ public class SecurityConfig {
   public SecurityConfig(
       TokenProvider tokenProvider,
       JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-      JwtAccessDeniedHandler jwtAccessDeniedHandler
+      JwtAccessDeniedHandler jwtAccessDeniedHandler,
+      UserRepository userRepository
   ) {
     this.tokenProvider = tokenProvider;
     this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    this.userRepository = userRepository;
   }
 
   @Bean
@@ -75,7 +79,7 @@ public class SecurityConfig {
         .anyRequest().authenticated()//나머지 요청들은 인증을 받아야함
         //jwtsecurityconfig 적용
         .and()
-        .apply(new JwtSecurityConfig(tokenProvider));
+        .apply(new JwtSecurityConfig(tokenProvider, userRepository));
     return http.build();
   }
 }

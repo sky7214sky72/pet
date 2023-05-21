@@ -1,5 +1,6 @@
 package com.facilities.pet.web.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class LoginDto {
 
   @NotNull
-  @Size(min = 11, max = 11)
+  @Schema(description = "핸드폰 번호")
   private String phoneNumber;
 
   @NotNull

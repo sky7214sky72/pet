@@ -5,6 +5,7 @@ services:
     container_name: pet-db
     platform: linux/arm64
     image: mysql:8.0
+    restart: always
     environment:
       MYSQL_DATABASE: pet_db
       MYSQL_USER: pet
@@ -18,7 +19,6 @@ services:
       - ../db/data:/var/lib/mysql:rw
     ports:
       - "3306:3306"
-    restart: always
   redis:
     image: redis:alpine
     command: redis-server --port 6379
@@ -35,6 +35,10 @@ services:
       - .:/pet
     container_name: pet-app
     restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/pet_db
+      SPRING_DATASOURCE_USERNAME: pet
+      SPRING_DATASOURCE_PASSWORD: pet
     command: ./gradlew --continuous bootRun
     depends_on:
       - db

@@ -27,10 +27,16 @@ public class PetCompany extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String category;
+
   private String name;
+
+  private String tel;
 
   @Column(columnDefinition = "TEXT")
   private String address;
+
+  private int zipCode;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
@@ -43,10 +49,14 @@ public class PetCompany extends BaseTimeEntity {
    * . PetCompany
    */
   @Builder
-  public PetCompany(String name, String address, Status status, double coordinatesX,
+  public PetCompany(String category, String name, String tel, String address, int zipCode,
+      Status status, double coordinatesX,
       double coordinatesY) {
+    this.category = category;
     this.name = name;
+    this.tel = tel;
     this.address = address;
+    this.zipCode = zipCode;
     this.status = status;
     this.coordinatesX = coordinatesX;
     this.coordinatesY = coordinatesY;
