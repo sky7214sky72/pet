@@ -6,7 +6,9 @@ import com.facilities.pet.service.user.UserService;
 import com.facilities.pet.web.dto.ReviewResponseDto;
 import com.facilities.pet.web.dto.ReviewSaveRequestDto;
 import com.facilities.pet.web.dto.ReviewUpdateRequestDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * . ReviewController
  */
 @RestController
+@Tag(name = "review", description = "리뷰 관련 API")
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ReviewController {
@@ -30,7 +33,8 @@ public class ReviewController {
   private final UserService userService;
 
   @GetMapping("/reviews/{companyId}")
-  public Page<ReviewResponseDto> list(Pageable pageable, @PathVariable Long companyId) {
+  public Page<ReviewResponseDto> list(@ParameterObject Pageable pageable,
+      @PathVariable Long companyId) {
     return reviewService.findByCompanyId(pageable, companyId);
   }
 

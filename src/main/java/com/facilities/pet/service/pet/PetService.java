@@ -111,6 +111,14 @@ public class PetService {
         tel = row.getCell(3).getCellType() == CellType.NUMERIC ? String.valueOf(
             row.getCell(3).getNumericCellValue()) : row.getCell(3).getStringCellValue();
       }
+
+      if (row.getCell(0) == null) {
+        throw new NullPointerException("업무구분명은 필수값입니다.");
+      }
+
+      if (row.getCell(1) == null) {
+        throw new NullPointerException("업체이름은 필수값입니다.");
+      }
       PetCompany petCompany = PetCompany.builder()
           .category(row.getCell(0).getStringCellValue())
           .name(row.getCell(1).getStringCellValue())

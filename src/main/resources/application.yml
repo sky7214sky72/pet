@@ -8,11 +8,6 @@ spring:
     url: jdbc:mysql://db:3306/pet_db
     username: pet
     password: pet
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
   devtools:
     restart:
       enabled: true
@@ -20,16 +15,11 @@ spring:
       enabled: true
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
         show_sql: true
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-
+        format_sql: true
 
 jwt:
   header: Authorization
@@ -40,5 +30,5 @@ jwt:
 springdoc:
   api-docs:
     path: /api-docs
-  swagger-ui:
-    defaultModelsExpandDepth: -1
+#  swagger-ui:
+#    defaultModelsExpandDepth: -1

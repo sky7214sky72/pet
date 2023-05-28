@@ -46,7 +46,6 @@ public class UserService {
    */
   @Transactional
   public User join(UserDto userDto) {
-    logger.debug(String.valueOf(userDto));
     if (userRepository.findOneWithAuthoritiesByPhoneNumber(userDto.getPhoneNumber()).orElse(null)
         != null) {
       throw new IllegalArgumentException("이미 가입되어 있는 유저입니다.");
