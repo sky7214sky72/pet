@@ -55,12 +55,11 @@ jobs:
       run: docker push cws070993/pet
 
     - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v0.1.6
+      uses: appleboy/ssh-action@master
       with:
+        key: ${{ secrets.KEY }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: 22
         script: |
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)
