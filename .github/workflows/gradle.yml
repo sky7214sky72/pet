@@ -57,9 +57,9 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
-        key: ${{ secrets.KEY }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.KEY }}
         script: |
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)
