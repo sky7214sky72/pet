@@ -16,32 +16,14 @@ public class ReviewSaveRequestDto {
 
   private String title;
   private String content;
-  private User user;
-  private PetCompany petCompany;
 
   /**
    * . ReviewSaveRequestDto
    */
   @Builder
-  public ReviewSaveRequestDto(String title, String content, User user, PetCompany petCompany) {
+  public ReviewSaveRequestDto(String title, String content) {
     this.title = title;
     this.content = content;
-    this.user = user;
-    this.petCompany = petCompany;
-  }
-
-  /**
-   * . setUser
-   */
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  /**
-   * . setPetCompany
-   */
-  public void setPetCompany(PetCompany petCompany) {
-    this.petCompany = petCompany;
   }
 
   /**
@@ -51,8 +33,6 @@ public class ReviewSaveRequestDto {
     return Review.builder()
         .title(title)
         .content(content)
-        .user(user)
-        .petCompany(petCompany)
         .build();
   }
 }

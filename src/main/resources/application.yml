@@ -1,8 +1,8 @@
 spring:
-  data:
-    redis:
-      host: redis_boot
-      port: 6379
+#  data:
+#    redis:
+#      host: redis_boot
+#      port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://db:3306/pet_db

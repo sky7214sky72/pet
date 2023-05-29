@@ -40,10 +40,10 @@ public class UserController {
   }
 
   // 로그아웃
-  @PostMapping("/logout")
-  public ResponseEntity<LogoutDto> userLogout(@Valid @RequestBody LogoutDto logoutDto) {
-    return ResponseEntity.ok(userService.logout(logoutDto));
-  }
+//  @PostMapping("/logout")
+//  public ResponseEntity<LogoutDto> userLogout(@Valid @RequestBody LogoutDto logoutDto) {
+//    return ResponseEntity.ok(userService.logout(logoutDto));
+//  }
 
   @GetMapping("/user")
   @PreAuthorize("hasAnyRole('USER','ADMIN')")

@@ -60,9 +60,13 @@ public class ReviewService {
   public Long save(ReviewSaveRequestDto reviewSaveRequestDto, User user, Long companyId) {
     PetCompany petCompany = petCompanyRepository.findById(companyId)
         .orElseThrow(() -> new IllegalArgumentException("해당 회사는 없습니다."));
-    reviewSaveRequestDto.setPetCompany(petCompany);
-    reviewSaveRequestDto.setUser(user);
-    return reviewRepository.save(reviewSaveRequestDto.toEntity()).getId();
+    Review review = Review.builder()
+        .title(reviewSaveRequestDto.getTitle())
+        .content(reviewSaveRequestDto.getContent())
+        .user(user)
+        .petCompany(petCompany)
+        .build();
+    return reviewRepository.save(review).getId();
   }
 
   /**

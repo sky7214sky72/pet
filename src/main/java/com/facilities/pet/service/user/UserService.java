@@ -7,16 +7,13 @@ import com.facilities.pet.jwt.JwtFilter;
 import com.facilities.pet.jwt.TokenProvider;
 import com.facilities.pet.util.SecurityUtil;
 import com.facilities.pet.web.dto.LoginDto;
-import com.facilities.pet.web.dto.LogoutDto;
 import com.facilities.pet.web.dto.TokenDto;
 import com.facilities.pet.web.dto.UserDto;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +35,7 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final TokenProvider tokenProvider;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
-  private final RedisTemplate<String, String> redisTemplate;
+//  private final RedisTemplate<String, String> redisTemplate;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   /**
@@ -78,9 +75,9 @@ public class UserService {
     // 3. 인증 정보를 기반으로 JWT 토큰 생성
     TokenDto jwt = tokenProvider.createToken(authentication);
     // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
-    redisTemplate.opsForValue()
-        .set("RT:" + authentication.getName(), jwt.getRefreshToken(),
-            jwt.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+//    redisTemplate.opsForValue()
+//        .set("RT:" + authentication.getName(), jwt.getRefreshToken(),
+//            jwt.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -90,28 +87,28 @@ public class UserService {
   /**
    * . logout
    */
-  @Transactional
-  public LogoutDto logout(LogoutDto logoutDto) {
-    // 1. Access Token 검증
-    if (!tokenProvider.validateToken(logoutDto.getAccessToken())) {
-      throw new IllegalArgumentException("잘못된 요청입니다.");
-    }
-
-    // 2. Access Token 에서 phone number을 가져옵니다.
-    Authentication authentication = tokenProvider.getAuthentication(logoutDto.getAccessToken());
-
-    // 3. Redis 에서 해당 phone number 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
-    if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
-      // Refresh Token 삭제
-      redisTemplate.delete("RT:" + authentication.getName());
-    }
-
-    // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
-    Long expiration = tokenProvider.getExpiration(logoutDto.getAccessToken());
-    redisTemplate.opsForValue()
-        .set(logoutDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
-    return logoutDto;
-  }
+//  @Transactional
+//  public LogoutDto logout(LogoutDto logoutDto) {
+//    // 1. Access Token 검증
+//    if (!tokenProvider.validateToken(logoutDto.getAccessToken())) {
+//      throw new IllegalArgumentException("잘못된 요청입니다.");
+//    }
+//
+//    // 2. Access Token 에서 phone number을 가져옵니다.
+//    Authentication authentication = tokenProvider.getAuthentication(logoutDto.getAccessToken());
+//
+//    // 3. Redis 에서 해당 phone number 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
+//    if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+//      // Refresh Token 삭제
+//      redisTemplate.delete("RT:" + authentication.getName());
+//    }
+//
+//    // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
+//    Long expiration = tokenProvider.getExpiration(logoutDto.getAccessToken());
+//    redisTemplate.opsForValue()
+//        .set(logoutDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+//    return logoutDto;
+//  }
 
   /**
    * . getUserWithAuthorities
