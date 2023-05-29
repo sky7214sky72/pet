@@ -32,9 +32,8 @@ jobs:
       run: |
         # create application.yml
         cd ./src/main
-        mkdir resources
         cd ./resources
-        
+        rm ./application.yml
         touch ./application.yml
         echo "${{ secrets.DATABASE }}" >> ./application.yml
       shell: bash
