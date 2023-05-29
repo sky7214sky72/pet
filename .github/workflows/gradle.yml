@@ -41,12 +41,15 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew bootJar
-      
-    - name: web docker build and push
-      run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{ secrets.DOCKER_REPO }} .
-        docker push ${{ secrets.DOCKER_REPO }}
+
+    - name: docker login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: docker publish
+      run: docker push cws070993/pet
+
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v0.1.6
       with:
@@ -55,8 +58,7 @@ jobs:
         key: ${{ secrets.KEY }}
         port: 22
         script: |
-          sudo docker stop prod-server
-          sudo docker rm prod-server
-          sudo docker image rm ${{ secrets.DOCKER_REPO }}
-          sudo docker pull ${{ secrets.DOCKER_REPO }}
-          sudo docker run -d -p 80:8080 ${{ secrets.DOCKER_REPO }}
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -a -q)
+          docker pull cws070993/pet
+          docker run -d -p 8080:8080 --name app cws070993/pet
