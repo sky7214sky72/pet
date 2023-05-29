@@ -40,15 +40,19 @@ jobs:
       
       
     - name: Build with Gradle
-      run: ./gradlew bootJar
+      run: ./gradlew build
+
+    - name: docker image build
+      run: docker build -t cws070993/pet .
 
     - name: docker login
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
     - name: docker publish
-      run: docker push cws070993/pet-platform:pet
+      run: docker push cws070993/pet
 
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v0.1.6
