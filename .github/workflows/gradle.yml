@@ -17,17 +17,14 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+    - name: Checkout
+      uses: actions/checkout@v3
+
     - name: make application.yml
       run: |
         # create application.yml
@@ -38,9 +35,9 @@ jobs:
         echo "${{ secrets.DATABASE }}" >> ./application.yml
       shell: bash
       
-      
-    - name: Build with Gradle
-      run: ./gradlew build
+    # Spring Boot App Build
+    - name: Spring Boot App Build
+      run: ./gradlew clean build --exclude-task test
 
     - name: docker image build
       run: docker build -t cws070993/pet .
@@ -51,17 +48,39 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: docker publish
+    - name: docker hub push
       run: docker push cws070993/pet
 
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
+    - name: get GitHub IP
+      id: ip
+      uses: haythem/public-ip@v1.2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Add GitHub IP to AWS
+      run: |
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+    # AWS EC2 Server Connect & Docker 명령어 실행
+    - name: AWS EC2 Connection
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
         key: ${{ secrets.KEY }}
+        port: ${{ secrets.EC2_SSH_PORT }}
+        timeout: 60s
         script: |
-          docker stop $(docker ps -a -q)
-          docker rm $(docker ps -a -q)
-          docker pull cws070993/pet
-          docker run -d -p 8080:8080 --name app cws070993/pet
+          sudo docker stop pet
+          sudo docker rm pet
+          sudo docker run -it -d -p 8080:8080 --name pet cws070993/pet
+
+    # REMOVE Github IP FROM security group (9)
+    - name: Remove IP FROM security group
+      run: |
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
