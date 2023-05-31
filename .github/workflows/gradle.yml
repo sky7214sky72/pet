@@ -76,7 +76,7 @@ jobs:
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
+        username: ${{ secrets.EC2_USERNAME }}
         password: ${{ secrets.EC2_PASSWORD }}
         port: ${{ secrets.EC2_SSH_PORT }}
         script: |
