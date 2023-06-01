@@ -27,12 +27,14 @@
 
 ## API 문서
 
-API 문서는 Swagger를 통해 자동 생성되고 있습니다. cws070993@gmail.com을 통해 링크를 요청해주시면 확인 후 전송해드리겠습니다.
+API 문서는 Swagger를 통해 자동 생성되고 있습니다. 
+cws070993@gmail.com을 통해 링크를 요청해주시면 확인 후 전송해드리겠습니다.
 
 
 ## 로컬 환경 세팅
 
-1. 이 저장소를 클론 후 제 이메일을 통해 docker-compose 파일을 요청해 주시면 필요한 application.yml 파일과 docker-compose 파일을 전송해드리겠습니다.
+1. 이 저장소를 클론
+2. 제 이메일을 통해 docker-compose 파일을 요청해 주시면 필요한 application.yml 파일과 docker-compose 파일을 전송해드리겠습니다.
 
 
 
