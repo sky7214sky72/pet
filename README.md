@@ -47,4 +47,4 @@ cws070993@gmail.com을 통해 링크를 요청해주시면 확인 후 전송해�
 - 애완동물 시설 분류 기능 개발
 - 유저 채팅 기능 추가
 
-[CodePen - 애완동물 시설 조회]([https://codepen.io/openai-helper/pen/qBaNmzV](https://codepen.io/rahgdihv-the-sans/pen/yLRdqqY))
+[CodePen - 애완동물 시설 조회](https://codepen.io/rahgdihv-the-sans/pen/yLRdqqY)
