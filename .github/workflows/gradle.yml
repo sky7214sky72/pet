@@ -31,12 +31,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - run: echo "./src/main/resources/application.yml" >> $APP_PATH
-
     - uses: actions/checkout@v3
-    - run: touch $APP_PATH
-    - run: echo "${{ secrets.DATABASE }}" > $APP_PATH
-    - run: cat $APP_PATH
+    - run: touch "${{ secrets.YML_PATH }}"
+    - run: echo "${{ secrets.DATABASE }}" > "${{ secrets.YML_PATH }}"
+    - run: cat "${{ secrets.YML_PATH }}"
       
     # Spring Boot App Build
     - name: Spring Boot App Build
