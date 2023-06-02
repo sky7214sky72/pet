@@ -46,10 +46,12 @@ jobs:
 
       - name: get GitHub IP
         id: ip
-        uses: haythem/public-ip@v1.2
+        uses: haythem/public-ip@v2
+        with:
+          version: '16'
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
