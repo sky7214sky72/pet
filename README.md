@@ -11,6 +11,11 @@
 - Gradle
 - Swagger
 
+## ERD
+
+![pet_db](https://github.com/sky7214sky72/pet/assets/45224987/c338b724-e258-4f75-addb-440175e1204b)
+
+
 ## 기능
 
 - 애완동물 시설 목록 조회
