@@ -22,23 +22,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
+    - uses: actions/checkout@v3
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
 
+    - uses: actions/checkout@v3
     - name: make application.yml
-      run: |
-        # create application.yml
-        cd ./src/main
-        cd ./resources
-        touch ./application.yml
-        echo "${{ secrets.DATABASE }}" >> ./application.yml
-      shell: bash
+    - run: touch ./src/main/resources/application.yml
+    - run: echo "${{ secrets.DATABASE }}" >> ./application.yml
       
     # Spring Boot App Build
     - name: Spring Boot App Build
