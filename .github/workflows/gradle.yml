@@ -32,9 +32,10 @@ jobs:
         distribution: 'temurin'
 
     - uses: actions/checkout@v3
-    - run: touch ./src/main/resources/application.yml
-    - run: echo "${{ secrets.DATABASE }}" > ./src/main/resources/application.yml
-    - run: cat ./src/main/resources/application.yml
+    - run: echo "./src/main/resources/application.yml" >> $APP_PATH
+    - run: touch $APP_PATH
+    - run: echo "${{ secrets.DATABASE }}" > $APP_PATH
+    - run: cat $APP_PATH
       
     # Spring Boot App Build
     - name: Spring Boot App Build
