@@ -1,86 +1,78 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
 name: Java CI with Gradle
 
 on:
   push:
     branches: [ "master" ]
-#   pull_request:
-#     branches: [ "master" ]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - uses: actions/checkout@v3
-    - run: touch "${{ secrets.YML_PATH }}"
-    - run: echo "${{ secrets.DATABASE }}" > "${{ secrets.YML_PATH }}"
-    - run: cat "${{ secrets.YML_PATH }}"
-      
-    # Spring Boot App Build
-    - name: Spring Boot App Build
-      run: ./gradlew clean build --exclude-task test
+      - uses: actions/checkout@v3
 
-    - name: docker image build
-      run: docker build -t cws070993/pet .
+      - name: Set Secrets
+        run: |
+          echo "${{ secrets.DATABASE }}" > ${{ secrets.YML_PATH }}
+          cat ${{ secrets.YML_PATH }}
 
-    - name: docker login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # Spring Boot App Build
+      - name: Spring Boot App Build
+        run: ./gradlew clean build --exclude-task test
 
-    - name: docker hub push
-      run: docker push cws070993/pet
+      - name: docker image build
+        run: docker build -t cws070993/pet .
 
-    - name: get GitHub IP
-      id: ip
-      uses: haythem/public-ip@v1.2
+      - name: docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
+      - name: docker hub push
+        run: docker push cws070993/pet
 
-    - name: Add GitHub IP to AWS
-      run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      - name: get GitHub IP
+        id: ip
+        uses: haythem/public-ip@v1.2
 
-    # AWS EC2 Server Connect & Docker 명령어 실행
-    - name: AWS EC2 Connection
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        password: ${{ secrets.EC2_PASSWORD }}
-        port: ${{ secrets.EC2_SSH_PORT }}
-        script: |
-          sudo docker stop pet
-          sudo docker rm pet
-          sudo docker run -it -d -p 8080:8080 --name pet cws070993/pet
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-    # REMOVE Github IP FROM security group (9)
-    - name: Remove IP FROM security group
-      run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      - name: Add GitHub IP to AWS
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      # AWS EC2 Server Connect & Docker 명령어 실행
+      - name: AWS EC2 Connection
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: ${{ secrets.EC2_SSH_PORT }}
+          script: |
+            sudo docker stop pet
+            sudo docker rm pet
+            sudo docker run -it -d -p 8080:8080 --name pet cws070993/pet
+
+      # REMOVE Github IP FROM security group (9)
+      - name: Remove IP FROM security group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
