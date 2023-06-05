@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +34,9 @@ public class ReviewController {
   private final UserService userService;
 
   @GetMapping("/reviews/{companyId}")
-  public Page<ReviewResponseDto> list(@ParameterObject Pageable pageable,
+  public ResponseEntity<Page<ReviewResponseDto>> list(@ParameterObject Pageable pageable,
       @PathVariable Long companyId) {
-    return reviewService.findByCompanyId(pageable, companyId);
+    return ResponseEntity.ok(reviewService.findByCompanyId(pageable, companyId));
   }
 
   @PostMapping("/reviews/{companyId}")
