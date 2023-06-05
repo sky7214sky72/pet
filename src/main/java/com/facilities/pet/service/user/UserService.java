@@ -35,14 +35,14 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final TokenProvider tokenProvider;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
-//  private final RedisTemplate<String, String> redisTemplate;
+  //  private final RedisTemplate<String, String> redisTemplate;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   /**
    * . join
    */
   @Transactional
-  public User join(UserDto userDto) {
+  public ResponseEntity<User> join(UserDto userDto) {
     if (userRepository.findOneWithAuthoritiesByPhoneNumber(userDto.getPhoneNumber()).orElse(null)
         != null) {
       throw new IllegalArgumentException("이미 가입되어 있는 유저입니다.");
@@ -56,7 +56,7 @@ public class UserService {
         .phoneNumber(userDto.getPhoneNumber())
         .authorities(Collections.singleton(authority))
         .build();
-    return userRepository.save(user);
+    return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
   }
 
   /**
@@ -114,9 +114,11 @@ public class UserService {
    * . getUserWithAuthorities
    */
   @Transactional(readOnly = true)
-  public Optional<User> getUserWithAuthorities(String phoneNumber) {
+  public ResponseEntity<User> getUserWithAuthorities(String phoneNumber) {
     //유저, 권한정보를 가져오는 메소드(username)을 기준으로
-    return userRepository.findOneWithAuthoritiesByPhoneNumber(phoneNumber);
+    return new ResponseEntity<>(
+        userRepository.findOneWithAuthoritiesByPhoneNumber(phoneNumber).orElse(null),
+        HttpStatus.OK);
   }
 
   /**

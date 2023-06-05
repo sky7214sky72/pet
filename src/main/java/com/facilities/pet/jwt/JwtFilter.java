@@ -48,6 +48,7 @@ public class JwtFilter extends GenericFilterBean {
       Optional<User> user = userRepository.findOneWithAuthoritiesByPhoneNumber(
           authentication.getName());
       if (user.isEmpty()) {
+        System.out.println("hi");
         throw new IllegalArgumentException("존재하지 않는 유저입니다.");
       }
       SecurityContextHolder.getContext().setAuthentication(authentication);

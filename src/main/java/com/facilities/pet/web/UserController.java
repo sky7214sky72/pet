@@ -30,7 +30,7 @@ public class UserController {
   //회원가입
   @PostMapping("/join")
   public ResponseEntity<User> join(@Valid @RequestBody UserDto userDto) {
-    return ResponseEntity.ok(userService.join(userDto));
+    return userService.join(userDto);
   }
 
   // 로그인
@@ -46,7 +46,7 @@ public class UserController {
 //  }
 
   @GetMapping("/user")
-  @PreAuthorize("hasAnyRole('USER','ADMIN')")
+  @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<User> getMyUserInfo() {
     //isPresent,get() 대신에 orElse를 쓰자
     return ResponseEntity.ok(userService.getMyUserWithAuthorities().orElse(null));
@@ -55,6 +55,6 @@ public class UserController {
   @GetMapping("/user/{phoneNumber}")
   @PreAuthorize("hasAnyRole('USER','ADMIN')")
   public ResponseEntity<User> getUserInfo(@PathVariable String phoneNumber) {
-    return ResponseEntity.ok(userService.getUserWithAuthorities(phoneNumber).orElse(null));
+    return userService.getUserWithAuthorities(phoneNumber);
   }
 }

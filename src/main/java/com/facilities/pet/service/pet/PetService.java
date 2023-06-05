@@ -9,6 +9,7 @@ import com.facilities.pet.web.dto.PetCompanySaveRequestDto;
 import com.facilities.pet.web.dto.PetCompanyUpdateRequestDto;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,59 +40,61 @@ public class PetService {
   private final PetCompanyRepository petCompanyRepository;
 
   /**
-   * . findAll
+   * . companyList
    */
   @Transactional
-  public Page<PetCompanyResponseDto> findAll(Pageable pageable) {
+  public ResponseEntity<Page<PetCompanyResponseDto>> companyList(Pageable pageable) {
     List<PetCompanyResponseDto> petCompanyList = petCompanyRepository.findAll(pageable).stream()
         .map(PetCompanyResponseDto::new)
         .collect(Collectors.toList());
-    return new PageImpl<>(petCompanyList, pageable,
-        petCompanyRepository.findAll(pageable).getTotalElements());
+    return new ResponseEntity<>(new PageImpl<>(petCompanyList, pageable,
+        petCompanyRepository.findAll(pageable).getTotalElements()), HttpStatus.OK);
   }
 
   /**
    * . findByCompanyId
    */
-  public PetCompanyResponseDetailDto findByCompanyId(Long companyId) {
+  public ResponseEntity<PetCompanyResponseDetailDto> findByCompanyId(Long companyId) {
     PetCompany petCompany = petCompanyRepository.findById(companyId).orElseThrow(() ->
         new IllegalArgumentException("해당 회사가 없습니다"));
-    return new PetCompanyResponseDetailDto(petCompany);
+    return new ResponseEntity<>(new PetCompanyResponseDetailDto(petCompany), HttpStatus.OK);
   }
 
   /**
    * . save
    */
   @Transactional
-  public Long save(PetCompanySaveRequestDto requestDto) {
-    return petCompanyRepository.save(requestDto.toEntity()).getId();
+  public ResponseEntity<PetCompany> save(PetCompanySaveRequestDto requestDto) {
+    return new ResponseEntity<>(petCompanyRepository.save(requestDto.toEntity()), HttpStatus.OK);
   }
 
   /**
    * . update
    */
   @Transactional
-  public Long update(Long companyId, PetCompanyUpdateRequestDto requestDto) {
+  public ResponseEntity<PetCompany> update(Long companyId, PetCompanyUpdateRequestDto requestDto) {
     PetCompany petCompany = petCompanyRepository.findById(companyId).orElseThrow(() ->
         new IllegalArgumentException("해당회사가 없습니다"));
     petCompany.update(requestDto.getName(), requestDto.getAddress(), requestDto.getStatus());
-    return companyId;
+    Optional<PetCompany> company = petCompanyRepository.findById(companyId);
+    return new ResponseEntity<>(company.orElse(null), HttpStatus.OK);
   }
 
   /**
    * . delete
    */
   @Transactional
-  public void delete(Long companyId) {
+  public ResponseEntity<?> delete(Long companyId) {
     PetCompany petCompany = petCompanyRepository.findById(companyId).orElseThrow(() ->
         new IllegalArgumentException("해당회사가 없습니다"));
     petCompanyRepository.delete(petCompany);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   /**
    * . excel Save
    */
-  public void excelSave(MultipartFile file) throws IOException {
+  public ResponseEntity<?> excelSave(MultipartFile file) throws IOException {
     String extension = FilenameUtils.getExtension(file.getOriginalFilename());
     if (!extension.equals("xlsx") && !extension.equals("xls")) {
       throw new IOException("only excel file upload please");
@@ -131,5 +136,6 @@ public class PetService {
           .build();
       petCompanyRepository.save(petCompany);
     }
+    return new ResponseEntity<>("", HttpStatus.OK);
   }
 }

@@ -1,17 +1,19 @@
 package com.facilities.pet.web;
 
+import com.facilities.pet.domain.pet.PetCompany;
 import com.facilities.pet.service.pet.PetService;
 import com.facilities.pet.web.dto.PetCompanyResponseDetailDto;
 import com.facilities.pet.web.dto.PetCompanyResponseDto;
 import com.facilities.pet.web.dto.PetCompanySaveRequestDto;
 import com.facilities.pet.web.dto.PetCompanyUpdateRequestDto;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,37 +35,42 @@ public class CompanyController {
 
   private final PetService petService;
 
+  @ApiResponses
   @GetMapping("/pet-companies")
-  public Page<PetCompanyResponseDto> list(@ParameterObject Pageable pageable) {
-    return petService.findAll(pageable);
+  @PreAuthorize("hasAnyRole('USER','ADMIN')")
+  public ResponseEntity<Page<PetCompanyResponseDto>> list(@ParameterObject Pageable pageable) {
+    return petService.companyList(pageable);
   }
 
   @PostMapping("/pet-companies")
-  public Long save(@RequestBody PetCompanySaveRequestDto requestDto) {
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<PetCompany> save(@RequestBody PetCompanySaveRequestDto requestDto) {
     return petService.save(requestDto);
   }
 
   @GetMapping("/pet-companies/{companyId}")
-  public PetCompanyResponseDetailDto detail(@PathVariable Long companyId) {
+  @PreAuthorize("hasAnyRole('USER','ADMIN')")
+  public ResponseEntity<PetCompanyResponseDetailDto> detail(@PathVariable Long companyId) {
     return petService.findByCompanyId(companyId);
   }
 
   @PutMapping("/pet-companies/{companyId}")
-  public Long modify(@PathVariable Long companyId,
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<PetCompany> modify(@PathVariable Long companyId,
       @RequestBody PetCompanyUpdateRequestDto requestDto) {
     return petService.update(companyId, requestDto);
   }
 
   @DeleteMapping("/pet-companies/{companyId}")
-  public Long delete(@PathVariable Long companyId) {
-    petService.delete(companyId);
-    return companyId;
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<?> delete(@PathVariable Long companyId) {
+    return petService.delete(companyId);
   }
 
   @PostMapping("/excel")
-  public ResponseEntity<String> excelSave(@RequestPart("file") MultipartFile file)
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<?> excelSave(@RequestPart("file") MultipartFile file)
       throws IOException {
-    petService.excelSave(file);
-    return new ResponseEntity<>("", HttpStatus.OK);
+    return petService.excelSave(file);
   }
 }
