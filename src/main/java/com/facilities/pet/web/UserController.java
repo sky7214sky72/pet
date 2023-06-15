@@ -54,7 +54,7 @@ public class UserController {
 
   @GetMapping("/user/{phoneNumber}")
   @PreAuthorize("hasAnyRole('USER','ADMIN')")
-  public ResponseEntity<User> getUserInfo(@PathVariable String phoneNumber) {
+  public ResponseEntity<User> getUserInfo(@PathVariable("phoneNumber") String phoneNumber) {
     return userService.getUserWithAuthorities(phoneNumber);
   }
 }

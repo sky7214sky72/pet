@@ -5,6 +5,7 @@ import com.facilities.pet.jwt.JwtAccessDeniedHandler;
 import com.facilities.pet.jwt.JwtAuthenticationEntryPoint;
 import com.facilities.pet.jwt.JwtSecurityConfig;
 import com.facilities.pet.jwt.TokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,6 +20,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 /**
  * . SecurityConfig
  */
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -28,21 +30,6 @@ public class SecurityConfig {
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
   private final UserRepository userRepository;
-
-  /**
-   * . SecurityConfig
-   */
-  public SecurityConfig(
-      TokenProvider tokenProvider,
-      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-      JwtAccessDeniedHandler jwtAccessDeniedHandler,
-      UserRepository userRepository
-  ) {
-    this.tokenProvider = tokenProvider;
-    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-    this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
-    this.userRepository = userRepository;
-  }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -56,12 +43,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf().disable()
-
-        .exceptionHandling()
-        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-        .accessDeniedHandler(jwtAccessDeniedHandler)
         //h2-console를 위한 설정
-        .and()
         .headers()
         .frameOptions()
         .sameOrigin()
@@ -81,7 +63,13 @@ public class SecurityConfig {
         .anyRequest().authenticated()//나머지 요청들은 인증을 받아야함
         //jwtsecurityconfig 적용
         .and()
-        .apply(new JwtSecurityConfig(tokenProvider, userRepository));
+        .apply(new JwtSecurityConfig(tokenProvider, userRepository))
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        .and()
+        .exceptionHandling()
+        .accessDeniedHandler(jwtAccessDeniedHandler);
     return http.build();
   }
 }

@@ -117,7 +117,8 @@ public class UserService {
   public ResponseEntity<User> getUserWithAuthorities(String phoneNumber) {
     //유저, 권한정보를 가져오는 메소드(username)을 기준으로
     return new ResponseEntity<>(
-        userRepository.findOneWithAuthoritiesByPhoneNumber(phoneNumber).orElse(null),
+        userRepository.findOneWithAuthoritiesByPhoneNumber(phoneNumber)
+            .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다")),
         HttpStatus.OK);
   }
 
