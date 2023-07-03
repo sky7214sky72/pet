@@ -1,6 +1,7 @@
 package com.facilities.pet.domain.user;
 
 import com.facilities.pet.domain.BaseTimeEntity;
+import com.facilities.pet.domain.enums.OauthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,6 +42,8 @@ public class User extends BaseTimeEntity {
 
   @Column(name = "phone_number", length = 50)
   private String phoneNumber;
+
+  private OauthProvider oauthProvider;
 
   @JsonIgnore
   @ManyToMany
