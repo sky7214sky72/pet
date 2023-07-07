@@ -14,15 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDto {
 
-  @NotNull
-  @Size(min = 3, max = 50)
-  private String username;
+  @Schema(description = "이메일 주소")
+  private String email;
 
-  @NotNull
-  @Size(min = 3, max = 100)
+  @Schema(description = "비밀번호")
   private String password;
 
-  @NotNull
   @Schema(description = "핸드폰 번호")
   private String phoneNumber;
 
@@ -30,8 +27,8 @@ public class UserDto {
    * . UserDto
    */
   @Builder
-  public UserDto(String username, String password, String phoneNumber) {
-    this.username = username;
+  public UserDto(String email, String password, String phoneNumber) {
+    this.email = email;
     this.password = password;
     this.phoneNumber = phoneNumber;
   }

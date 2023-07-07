@@ -33,8 +33,8 @@ public class User extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userId;
 
-  @Column(name = "username", length = 50, unique = true)
-  private String username;
+  @Column(name = "email")
+  private String email;
 
   @JsonIgnore
   @Column(name = "password", length = 100)
@@ -43,7 +43,8 @@ public class User extends BaseTimeEntity {
   @Column(name = "phone_number", length = 50)
   private String phoneNumber;
 
-  private OauthProvider oauthProvider;
+  @Column(name = "oauth_provider")
+  private String oauthProvider;
 
   @JsonIgnore
   @ManyToMany

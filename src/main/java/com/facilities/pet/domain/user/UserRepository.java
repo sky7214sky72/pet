@@ -10,5 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, Long> {
 
   @EntityGraph(attributePaths = "authorities")
-  Optional<User> findOneWithAuthoritiesByPhoneNumber(String phoneNumber);
+  Optional<User> findOneWithAuthoritiesByEmail(String email);
+
+  Optional<User> findByEmail(String email);
 }

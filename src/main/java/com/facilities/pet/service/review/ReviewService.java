@@ -82,7 +82,7 @@ public class ReviewService {
       User user) {
     Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
         new IllegalArgumentException("해당 리뷰가 없습니다"));
-    if (review.getUser().getPhoneNumber() != user.getPhoneNumber()) {
+    if (!review.getUser().getEmail().equals(user.getEmail())) {
       throw new IllegalArgumentException("리뷰 작성자만 업데이트가 가능합니다.");
     }
     review.update(reviewUpdateRequestDto.getTitle(), reviewUpdateRequestDto.getContent());

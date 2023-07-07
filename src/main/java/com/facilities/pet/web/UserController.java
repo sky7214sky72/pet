@@ -1,6 +1,7 @@
 package com.facilities.pet.web;
 
 import com.facilities.pet.domain.user.User;
+import com.facilities.pet.oauth.NaverLoginParams;
 import com.facilities.pet.service.user.UserService;
 import com.facilities.pet.web.dto.LoginDto;
 import com.facilities.pet.web.dto.LogoutDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -39,6 +41,13 @@ public class UserController {
     return userService.login(loginDto);
   }
 
+  /**
+   * . 네이버 로그인
+   */
+  @PostMapping("/naver/login")
+  public ResponseEntity<TokenDto> naverLogin(@RequestBody NaverLoginParams params) {
+    return userService.naverLogin(params);
+  }
   // 로그아웃
 //  @PostMapping("/logout")
 //  public ResponseEntity<LogoutDto> userLogout(@Valid @RequestBody LogoutDto logoutDto) {
@@ -52,9 +61,9 @@ public class UserController {
     return ResponseEntity.ok(userService.getMyUserWithAuthorities().orElse(null));
   }
 
-  @GetMapping("/user/{phoneNumber}")
+  @GetMapping("/user/email")
   @PreAuthorize("hasAnyRole('USER','ADMIN')")
-  public ResponseEntity<User> getUserInfo(@PathVariable("phoneNumber") String phoneNumber) {
-    return userService.getUserWithAuthorities(phoneNumber);
+  public ResponseEntity<User> getUserInfo(@RequestParam String email) {
+    return userService.getUserWithAuthorities(email);
   }
 }

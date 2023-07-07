@@ -14,16 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginDto {
 
-  @NotNull
+  @Schema(description = "이메일")
+  private String email;
   @Schema(description = "핸드폰 번호")
   private String phoneNumber;
-
-  @NotNull
-  @Size(min = 3, max = 100)
+  @Schema(description = "비밀 번호")
   private String password;
 
   @Builder
-  public LoginDto(String phoneNumber, String password) {
+  public LoginDto(String email, String phoneNumber, String password) {
+    this.email = email;
     this.phoneNumber = phoneNumber;
     this.password = password;
   }

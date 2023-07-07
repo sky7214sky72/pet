@@ -51,15 +51,20 @@ public class SecurityConfig {
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
         .and()
         .authorizeHttpRequests()//HttpServletRequest를 사용하는 요청에 대해 접근제한
+        .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll()
+        .requestMatchers("/api/naver/login").permitAll()
         .requestMatchers(new AntPathRequestMatcher("/api/logout")).permitAll()
         .requestMatchers(new AntPathRequestMatcher("/api/join")).permitAll()
-        .requestMatchers("/favicon.ico", "/api-docs/**", "/swagger-ui/**"
-        ).permitAll()
+        .requestMatchers("/favicon.ico").permitAll()
         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+        .requestMatchers("/v3/api-docs/**").permitAll()
+        .requestMatchers("/api-docs/**").permitAll()
+        .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+        .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
+        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/index.html")).permitAll()
         .anyRequest().authenticated()//나머지 요청들은 인증을 받아야함
         //jwtsecurityconfig 적용
         .and()

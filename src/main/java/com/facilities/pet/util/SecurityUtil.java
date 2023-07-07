@@ -19,9 +19,9 @@ public class SecurityUtil {
   }
 
   /**
-   * . getCurrentPhoneNumber
+   * . getCurrentEmail
    */
-  public static Optional<String> getCurrentPhoneNumber() {
+  public static Optional<String> getCurrentEmail() {
     //Security Context의 Authentication 객체를 이용해 username을 리턴
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -29,12 +29,12 @@ public class SecurityUtil {
       logger.debug("Security Context에 인증정보가 없습니다.");
       return Optional.empty();
     }
-    String phoneNumber = null;
+    String email = null;
     if (authentication.getPrincipal() instanceof UserDetails springSecurityUser) {
-      phoneNumber = springSecurityUser.getUsername();
+      email = springSecurityUser.getUsername();
     } else if (authentication.getPrincipal() instanceof String) {
-      phoneNumber = (String) authentication.getPrincipal();
+      email = (String) authentication.getPrincipal();
     }
-    return Optional.ofNullable(phoneNumber);
+    return Optional.ofNullable(email);
   }
 }
