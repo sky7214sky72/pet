@@ -55,7 +55,7 @@ public class SecurityConfig {
         .authorizeHttpRequests()//HttpServletRequest를 사용하는 요청에 대해 접근제한
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll()
-        .requestMatchers("/api/naver/login").permitAll()
+        .requestMatchers(new AntPathRequestMatcher("/api/naver/login")).permitAll()
         .requestMatchers(new AntPathRequestMatcher("/api/logout")).permitAll()
         .requestMatchers(new AntPathRequestMatcher("/api/join")).permitAll()
         .requestMatchers("/favicon.ico").permitAll()
@@ -68,7 +68,7 @@ public class SecurityConfig {
         .anyRequest().authenticated()//나머지 요청들은 인증을 받아야함
         //jwtsecurityconfig 적용
         .and()
-        .apply(new JwtSecurityConfig(tokenProvider, userRepository))
+        .apply(new JwtSecurityConfig(tokenProvider))
         .and()
         .exceptionHandling()
         .authenticationEntryPoint(jwtAuthenticationEntryPoint)

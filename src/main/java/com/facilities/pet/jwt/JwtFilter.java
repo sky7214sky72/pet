@@ -1,14 +1,12 @@
 package com.facilities.pet.jwt;
 
-import com.facilities.pet.domain.user.User;
-import com.facilities.pet.domain.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -19,6 +17,7 @@ import org.springframework.web.filter.GenericFilterBean;
 /**
  * . JwtFilter
  */
+@RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
   private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
@@ -26,13 +25,6 @@ public class JwtFilter extends GenericFilterBean {
   public static final String AUTHORIZATION_HEADER = "Authorization";
 
   private final TokenProvider tokenProvider;
-
-  private final UserRepository userRepository;
-
-  public JwtFilter(TokenProvider tokenProvider, UserRepository userRepository) {
-    this.tokenProvider = tokenProvider;
-    this.userRepository = userRepository;
-  }
 
   //jwt토큰 인증정보를 SecurityContext에 저장하는 역할 수행
   @Override

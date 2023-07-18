@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -85,7 +84,7 @@ public class UserService {
           .build();
       User user = User.builder()
           .email(oauthInfoResponse.getEmail())
-          .password(oauthInfoResponse.getEmail())
+          .password(passwordEncoder.encode(oauthInfoResponse.getEmail()))
           .authorities(Collections.singleton(authority))
           .oauthProvider(OauthProvider.NAVER.name())
           .build();
@@ -145,23 +144,23 @@ public class UserService {
   /**
    * . 인증 및 토큰 발급 공통 함수
    */
-   private ResponseEntity<TokenDto> getLogin(String userId, String password) {
-     // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-     // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-     UsernamePasswordAuthenticationToken authenticationToken =
-         new UsernamePasswordAuthenticationToken(userId, password);
-     // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-     // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-     Authentication authentication = authenticationManagerBuilder.getObject()
-         .authenticate(authenticationToken);
-     // 3. 인증 정보를 기반으로 JWT 토큰 생성
-     TokenDto jwt = tokenProvider.createToken(authentication);
-     // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+  private ResponseEntity<TokenDto> getLogin(String userId, String password) {
+    // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+    // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+    UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(userId, password);
+    // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+    // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+    Authentication authentication = authenticationManagerBuilder.getObject()
+        .authenticate(authenticationToken);
+    // 3. 인증 정보를 기반으로 JWT 토큰 생성
+    TokenDto jwt = tokenProvider.createToken(authentication);
+    // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
 //    redisTemplate.opsForValue()
 //        .set("RT:" + authentication.getName(), jwt.getRefreshToken(),
 //            jwt.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-     HttpHeaders httpHeaders = new HttpHeaders();
-     httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-     return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
-   }
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+    return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
+  }
 }
