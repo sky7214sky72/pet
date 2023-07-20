@@ -290,5 +290,6 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/intellij,intellij+all,intellij+iml,java,gradle,redis
 src/main/resources/application.yml
 application.yml
+src/main/resources/application-dev.yml
 docker-compose.yml
 /db
