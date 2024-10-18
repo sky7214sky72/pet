@@ -50,6 +50,12 @@ jar {
 	enabled = false
 }
 
+tasks.register('copyApplicationYml', Copy) {
+	from './pet-config'
+	include '*.yml'
+	into './src/main/resources'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
