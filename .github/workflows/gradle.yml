@@ -80,5 +80,5 @@ jobs:
 
       # 4. 최신 이미지를 컨테이너화하여 실행시킵니다
       - name: docker run new container
-        run: cd ./pet-docker | sudo docker-compose up -d
+        run: cd ${{secrets.DIR}} | sudo docker-compose up -d
 
