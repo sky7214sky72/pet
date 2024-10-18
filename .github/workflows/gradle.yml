@@ -38,7 +38,7 @@ jobs:
         run: |
           ./gradlew clean
           ./gradlew copyApplicationYml
-          ./gradlew build -x test
+          ./gradlew clean build --exclude-task test
 
         # 3. Docker 이미지 빌드
       - name: docker image build
@@ -80,5 +80,5 @@ jobs:
 
       # 4. 최신 이미지를 컨테이너화하여 실행시킵니다
       - name: docker run new container
-        run: sudo docker-compose -f ${{ secrets.DIR }}/docker-compose.yml up -d
+        run: sudo docker stop pet | sudo docker rm pet | sudo docker rmi cws070993/pet | sudo docker pull cws070993/pet | sudo docker run -it -d -p 8081:8081 --name pet cws070993/pet
 
