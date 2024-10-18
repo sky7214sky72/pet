@@ -1,0 +1,3 @@
+[submodule "pet-config"]
+	path = pet-config
+	url = https://sky7214sky72@github.com/sky7214sky72/pet-config.git

@@ -4,6 +4,7 @@ import com.facilities.pet.domain.user.User;
 import com.facilities.pet.oauth.NaverLoginParams;
 import com.facilities.pet.service.user.UserService;
 import com.facilities.pet.web.dto.LoginDto;
+import com.facilities.pet.web.dto.LogoutDto;
 import com.facilities.pet.web.dto.TokenDto;
 import com.facilities.pet.web.dto.UserDto;
 import jakarta.validation.Valid;
@@ -46,11 +47,14 @@ public class UserController {
   public ResponseEntity<TokenDto> naverLogin(@RequestBody NaverLoginParams params) {
     return userService.naverLogin(params);
   }
-  // 로그아웃
-//  @PostMapping("/logout")
-//  public ResponseEntity<LogoutDto> userLogout(@Valid @RequestBody LogoutDto logoutDto) {
-//    return ResponseEntity.ok(userService.logout(logoutDto));
-//  }
+
+  /**
+   * . 로그아웃
+   */
+  @PostMapping("/logout")
+  public ResponseEntity<LogoutDto> userLogout(@Valid @RequestBody LogoutDto logoutDto) {
+    return ResponseEntity.ok(userService.logout(logoutDto));
+  }
 
   @GetMapping("/user")
   @PreAuthorize("hasAnyRole('ADMIN')")

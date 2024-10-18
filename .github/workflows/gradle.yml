@@ -1,81 +1,85 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
 name: Java CI with Gradle
 
 on:
   push:
+    branches: [ "master" ]
+  pull_request:
     branches: [ "master" ]
 
 permissions:
   contents: read
 
 jobs:
-  deploy:
+  #Spring boot 애플리케이션을 빌드해서 도커허브에 푸시
+  build-docker-image:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Set Secrets
+      # 설정 파일 체크아웃
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACTION_TOKEN }}
+          submodules: true
+      # 2. Spring Boot 애플리케이션 빌드
+      - name: Build with Gradle
         run: |
-          echo "${{ secrets.DATABASE }}" > ${{ secrets.YML_PATH }}
-          cat ${{ secrets.YML_PATH }}
+          ./gradlew clean
+          ./gradlew copyApplicationYml
+          ./gradlew copyTestApplicationYml
+          ./gradlew build -x test
 
-      # Spring Boot App Build
-      - name: Spring Boot App Build
-        run: ./gradlew clean build --exclude-task test
-
+        # 3. Docker 이미지 빌드
       - name: docker image build
-        run: docker build -t cws070993/pet .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/pet .
 
+      # 4. DockerHub 로그인
       - name: docker login
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: docker hub push
-        run: docker push cws070993/pet
+      # 5. Docker Hub 이미지 푸시
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/pet:latest
 
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: get GitHub IP
-        id: ip
-        uses: haythem/public-ip@v1.3
+  # 위 과정에서 푸시한 이미지를 ec2에서 풀받아서 실행시키는 과정
+  run-docker-image-on-ec2:
+    # build-docker-image (위)과정이 완료되어야 실행됩니다.
+    needs: build-docker-image
+    runs-on: [ self-hosted, pet ]
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+    steps:
+      # DockerHub 로그인
+      - name: Log in to Docker Hub
+        run: sudo echo ${{ secrets.DOCKERHUB_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      # 1. 최신 이미지를 풀받습니다
+      - name: docker pull
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pet
 
-      - name: Add GitHub IP to AWS
-        run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      # 2. 기존의 컨테이너를 중지시킵니다
+      - name: docker stop container
+        run: sudo docker stop pet 2>/dev/null || true
 
-      # AWS EC2 Server Connect & Docker 명령어 실행
-      - name: AWS EC2 Connection
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          script: |
-            sudo docker stop pet
-            sudo docker rm pet
-            sudo docker rmi cws070993/pet
-            sudo docker pull cws070993/pet
-            sudo docker run -it -d -p 8080:8080 --name pet cws070993/pet
+      # 3. 미사용 이미지를 정리합니다
+      - name: delete old docker image
+        run: sudo docker system prune -f
 
-      # REMOVE Github IP FROM security group (9)
-      - name: Remove IP FROM security group
-        run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      # 4. 최신 이미지를 컨테이너화하여 실행시킵니다
+      - name: docker run new container
+        run: sudo ./pet-docker/docker-compose up -d
+
